@@ -14,9 +14,6 @@ class Notepad:
 
 
 class TabManager:
-    INDEX_OF_FRAMEGENERATOR = 0
-    INDEX_OF_LABELGENERATOR = 1
-
     class FrameGenerator:
         def __init__(self, target_window):
             self.target_window = target_window
@@ -31,18 +28,9 @@ class TabManager:
             except NameError:
                 print("create_a_frame()을 사용해야 합니다.")
 
-    class LabelGenerator:
-        def __init__(self, target_frame, text):
-            self.target_frame = target_frame
-            self.text = text
-
-        def create_a_label(self):
-            self.label = tk.Label(self.target_frame, text=self.text)
-            self.label.pack()
-
     def __init__(self, window):
         self.window = window
-        self.tabs = {}
+        self.tabs = {}  # self.tabs = {탭 이름: tk.Frame, ...}
 
         self.notebook = tkinter.ttk.Notebook(self.window, width=300, height=300)
         self.notebook.pack()
@@ -51,23 +39,32 @@ class TabManager:
         self.create_a_tab("탭2")
         self.create_a_tab("탭3")
 
+        self.tab_name = "탭1"
+        self.label1 = tk.Label(
+            self.tabs[self.tab_name].frame, text=f"{self.tab_name}의 내용"
+        )
+        self.label1.pack()
+
+        self.tab_name = "탭2"
+        self.label1 = tk.Label(
+            self.tabs[self.tab_name].frame, text=f"{self.tab_name}의 내용"
+        )
+        self.label1.pack()
+
+        self.tab_name = "탭3"
+        self.label1 = tk.Label(
+            self.tabs[self.tab_name].frame, text=f"{self.tab_name}의 내용"
+        )
+        self.label1.pack()
+
     def create_a_tab(self, tab_name="새 탭"):
-        self.tabs[tab_name] = list()
-        self.tabs[tab_name].append(TabManager.FrameGenerator(self.window))
-        self.tabs[tab_name][TabManager.INDEX_OF_FRAMEGENERATOR].create_a_frame()
+        "이름이 tab_name인 새 탭을 생성한다."
 
-        self.tabs[tab_name].append(
-            TabManager.LabelGenerator(
-                self.tabs[tab_name][TabManager.INDEX_OF_FRAMEGENERATOR].frame,
-                text=f"{tab_name}의 내용",
-            )
-        )
+        self.tabmanager_frame = TabManager.FrameGenerator(self.window)
+        self.tabs[tab_name] = self.tabmanager_frame
 
-        self.notebook.add(
-            self.tabs[tab_name][TabManager.INDEX_OF_FRAMEGENERATOR].frame, text=tab_name
-        )
-
-        self.tabs[tab_name][TabManager.INDEX_OF_LABELGENERATOR].create_a_label()
+        self.tabmanager_frame.create_a_frame()
+        self.notebook.add(self.tabmanager_frame.frame, text=tab_name)
 
 
 if __name__ == "__main__":
